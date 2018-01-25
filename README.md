@@ -2,7 +2,7 @@
 🐱 Simple app to make sure me and my girlfriend are cleaning the damn litter box.
 
 ### Setup
-1. Create a `participants.json` file in app directory with participants, e.g.:
+1. Create a `participants.json` file in app's root directory with participants, e.g.:
 ```
 [
     {
