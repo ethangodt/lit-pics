@@ -1,4 +1,5 @@
 // TODO figure out how to make this just a lambda function or something, so I don't need a server...
+// TODO any error handling whatsoever
 
 require('dotenv').config()
 
@@ -10,7 +11,8 @@ const { sendMessage } = require('./lib/messenger')
 const parser = require('body-parser')
 const CronJob = require('cron').CronJob
 
-// TODO put participant logic in other file; add code to store new current participant on .env file in case app crashes (make it a docker volume)
+// TODO put participant logic in other file
+// TODO add code to store new current participant on .env file in case app crashes (make it a docker volume)
 let currentParticipant = participants.find((p) => p.name === INITIAL_PARTICIPANT) || participants[0]
 
 function getNextParticipant() {
