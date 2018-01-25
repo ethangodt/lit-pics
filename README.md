@@ -18,6 +18,7 @@
 2. Create a `.env` file in app's root directory with these envs:
 ```
 PORT={port-num}
+TIMEZONE={http://momentjs.com/timezone/}
 TWILIO_TOKEN={token}
 TWILIO_ACCOUNT={acct-sid}
 TWILIO_NUMBER=+{twilio-phone-num}
