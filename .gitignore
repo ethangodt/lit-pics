@@ -1,3 +1,6 @@
+.env
+participants.json
+
 # Logs
 logs
 *.log
