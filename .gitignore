@@ -1,5 +1,5 @@
 .env
-participants.json
+config.json
 
 # Logs
 logs
@@ -59,4 +59,3 @@ typings/
 
 # dotenv environment variables file
 .env
-

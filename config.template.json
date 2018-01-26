@@ -1,0 +1,22 @@
+{
+    "participants": [
+        {
+            "name": "Bob",
+            "number": "+15555555555"
+        },
+        {
+            "name": "Dylan",
+            "number": "+16666666666"
+        }
+    ],
+    "port": 2287,
+    "preferences": {
+        "alertTime": "7:00pm",
+        "timezone": "America/Chicago"
+    },
+    "twilio": {
+        "number": "+17777777777",
+        "sid": "xyz",
+        "token": "xyz"
+    }
+}

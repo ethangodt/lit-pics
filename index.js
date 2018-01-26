@@ -1,20 +1,19 @@
 // TODO figure out how to make this just a lambda function or something, so I don't need a server...
 // TODO any error handling whatsoever
 
-require('dotenv').config()
+
 const express = require('express')
 const app = express()
 const parser = require('body-parser')
 const CronJob = require('cron').CronJob
-const { PORT, INITIAL_PARTICIPANT, TIMEZONE } = process.env
-const participants = require('./participants')
+const { participants, port, timezone } = require('./config')
 const { sendMessage } = require('./lib/messenger')
 
 app.use(parser.urlencoded({ extended: false }))
 
 // TODO put participant logic in other file
 // TODO add code to store new current participant on .env file in case app crashes (make it a docker volume)
-let currentParticipant = participants.find((p) => p.name === INITIAL_PARTICIPANT) || participants[0]
+let currentParticipant = participants.find((p) => p.name === 'INITIAL_PARTICIPANT') || participants[0]
 
 function getNextParticipant() {
     return participants.find((p) => p.name !== currentParticipant.name)
@@ -29,7 +28,7 @@ new CronJob('0 19 * * *', async () => {
             body: `It's your night to clean the hissers' pissers. Respond with a picture of a clean cat camode.`,
         }
     )
-}, null, true, TIMEZONE)
+}, null, true, timezone)
 
 app.get('/ping', (req, res) => {
     res.send('pong')
@@ -50,6 +49,6 @@ app.post('/incoming', async (req, res) => {
     return res.status(200).end()
 })
 
-app.listen(PORT, () => {
-    console.log(`app listening on ${PORT}`)
+app.listen(port, () => {
+    console.log(`app listening on ${port}`)
 })
