@@ -14,7 +14,7 @@
   "devDependencies": {},
   "scripts": {
     "start": "node .",
-    "dev": "nodemon --inspect ."
+    "dev": "nodemon --inspect . --ignore ./config.json"
   },
   "repository": {
     "type": "git",

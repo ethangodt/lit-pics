@@ -2,11 +2,13 @@
     "participants": [
         {
             "name": "Bob",
-            "number": "+15555555555"
+            "number": "+15555555555",
+            "karma": 0
         },
         {
             "name": "Dylan",
-            "number": "+16666666666"
+            "number": "+16666666666",
+            "karma": 0
         }
     ],
     "port": 2287,

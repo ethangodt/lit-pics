@@ -8,11 +8,13 @@
 [
     {
         "name": "ethan",
-        "number": "+15555555555" <-- this format is important!
+        "number": "+15555555555", <-- this format is important!
+        "karma": 0
     },
     {
         "name": "emilie",
-        "number": "+15555555555" <-- this format is important!
+        "number": "+15555555555", <-- this format is important!
+        "karma": 0
     }
 ]
 ```

@@ -8,6 +8,7 @@ const CronJob = require('cron').CronJob
 const { alertTime, timezone } = require('./config').preferences
 const { participants, port } = require('./config')
 const { deleteImage, sendMessage } = require('./lib/messenger')
+const karma = require('./lib/karma')
 
 app.use(parser.urlencoded({ extended: false }))
 
@@ -37,9 +38,10 @@ app.get('/ping', (req, res) => {
 app.post('/incoming', async (req, res) => {
     const { MediaUrl0 = '', Body = '', From, MessageSid } = req.body
     const splitUrl = MediaUrl0.split('/')
-    const MediaSid = splitUrl.find((string) => string.includes('ME'))
+    const MediaSid = splitUrl.find((string) => string.startsWith('ME'))
     const isImage = !!MediaUrl0
     const isConfirmation = From === getNextParticipant().number && Body.toLowerCase() === 'ok'
+
     if (isImage) {
         await sendMessage(getNextParticipant().number, { body: 'Does this litter look fit for a critter? If so, respond with "ok".', mediaUrl: MediaUrl0 })
         await sendMessage(From, { body: 'Lit pic successfully sent...hopefully you did a good job :)'})
@@ -49,6 +51,7 @@ app.post('/incoming', async (req, res) => {
         currentParticipant = getNextParticipant()
         await sendMessage(From, { body: `Thx. It's now ${currentParticipant.name}'s turn!` })
     }
+
     return res.status(200).end()
 })
 
