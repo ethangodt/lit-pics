@@ -44,8 +44,10 @@ app.post('/incoming', async (req, res) => {
         await sendMessage(From, { body: 'Lit pic successfully sent...hopefully you did a good job :)'})
     }
     if (isConfirmation) {
+        const prevParticipant = currentParticipant
         currentParticipant = getNextParticipant()
         await sendMessage(From, { body: `Thx. It's now ${currentParticipant.name}'s turn!` })
+        await sendMessage(prevParticipant.number, { body: `You got the thumbs up on this beauty.` })
     }
     return res.status(200).end()
 })
