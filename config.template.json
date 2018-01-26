@@ -11,12 +11,12 @@
     ],
     "port": 2287,
     "preferences": {
-        "alertTime": "7:00pm",
+        "alertTime": "0 19 * * *",
         "timezone": "America/Chicago"
     },
     "twilio": {
         "number": "+17777777777",
-        "sid": "xyz",
-        "token": "xyz"
+        "accountSid": "xyz",
+        "authToken": "xyz"
     }
 }

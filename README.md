@@ -16,5 +16,12 @@
     }
 ]
 ```
-3. `npm i`
-4. `npm start`
+3. Set preferences object to proper format:
+```
+{
+    "alertTime": https://www.npmjs.com/package/cron,
+    "timezone": http://momentjs.com/timezone
+}
+```
+4. `npm i`
+5. `npm start`

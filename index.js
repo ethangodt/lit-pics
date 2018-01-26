@@ -1,12 +1,12 @@
 // TODO figure out how to make this just a lambda function or something, so I don't need a server...
 // TODO any error handling whatsoever
 
-
 const express = require('express')
 const app = express()
 const parser = require('body-parser')
 const CronJob = require('cron').CronJob
-const { participants, port, timezone } = require('./config')
+const { alertTime, timezone } = require('./config').preferences
+const { participants, port } = require('./config')
 const { sendMessage } = require('./lib/messenger')
 
 app.use(parser.urlencoded({ extended: false }))
@@ -19,7 +19,7 @@ function getNextParticipant() {
     return participants.find((p) => p.name !== currentParticipant.name)
 }
 
-new CronJob('0 19 * * *', async () => {
+new CronJob(alertTime, async () => {
     // TODO add something in here so the next participant gets messaged if someone skips cleaning - naughty naughty
     console.log('cron task firing')
     await sendMessage(
