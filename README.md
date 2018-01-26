@@ -17,4 +17,4 @@
 ]
 ```
 3. `npm i`
-3. `npm start`
+4. `npm start`
