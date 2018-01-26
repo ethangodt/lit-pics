@@ -7,7 +7,7 @@ const parser = require('body-parser')
 const CronJob = require('cron').CronJob
 const { alertTime, timezone } = require('./config').preferences
 const { participants, port } = require('./config')
-const { sendMessage } = require('./lib/messenger')
+const { deleteImage, sendMessage } = require('./lib/messenger')
 
 app.use(parser.urlencoded({ extended: false }))
 
@@ -35,12 +35,15 @@ app.get('/ping', (req, res) => {
 })
 
 app.post('/incoming', async (req, res) => {
-    const { MediaUrl0 = '', Body = '', From } = req.body
+    const { MediaUrl0 = '', Body = '', From, MessageSid } = req.body
+    const splitUrl = MediaUrl0.split('/')
+    const MediaSid = splitUrl.find((string) => string.includes('ME'))
     const isImage = !!MediaUrl0
     const isConfirmation = From === getNextParticipant().number && Body.toLowerCase() === 'ok'
     if (isImage) {
         await sendMessage(getNextParticipant().number, { body: 'Does this litter look fit for a critter? If so, respond with "ok".', mediaUrl: MediaUrl0 })
         await sendMessage(From, { body: 'Lit pic successfully sent...hopefully you did a good job :)'})
+        await setTimeout(() => {deleteImage(MessageSid, MediaSid)}, 10000)
     }
     if (isConfirmation) {
         currentParticipant = getNextParticipant()
