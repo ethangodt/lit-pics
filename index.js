@@ -9,7 +9,6 @@ const CronJob = require('cron').CronJob
 const { alertTime, timezone } = require('./config').preferences
 const { participants, port } = require('./config')
 const { deleteImage, sendMessage } = require('./lib/messenger')
-const karma = require('./lib/karma')
 
 app.use(parser.urlencoded({ extended: false }))
 
@@ -27,14 +26,17 @@ new CronJob(alertTime, async () => {
     console.log(`cron task firing at ${Date.now()}`)
     await sendMessage(
         currentParticipant.number,
-        { body: `It's your night to clean the hissers' pissers. Respond with a picture of a clean cat camode.` }
+        {
+            body: `It's your night to clean the hissers' pissers. Respond with a picture of a clean cat camode.`,
+            includeCatGif: true,
+        }
     )
 }, null, true, timezone)
 
 app.use(morgan('tiny'))
 
 app.get('/ping', wrap(async (req, res) => {
-    return res.send('pong')
+    return res.send(catGifUrl)
 }))
 
 app.post('/incoming', wrap(async (req, res) => {
@@ -46,13 +48,13 @@ app.post('/incoming', wrap(async (req, res) => {
 
     if (isImage) {
         await sendMessage(getNextParticipant().number, { body: 'Does this litter look fit for a critter? If so, respond with "ok".', mediaUrl: MediaUrl0 })
-        await sendMessage(From, { body: 'Lit pic successfully sent...hopefully you did a good job :)'})
-        await setTimeout(() => deleteImage(MessageSid, MediaSid), 10000)
+        await sendMessage(From, { body: 'Lit pic successfully sent...hopefully you did a good job :)' })
+        await setTimeout(() => await deleteImage(MessageSid, MediaSid), 10000)
     }
     if (isConfirmation) {
         const prevParticipant = currentParticipant
         currentParticipant = getNextParticipant()
-        await sendMessage(From, { body: `Thx. It's now ${currentParticipant.name}'s turn!` })
+        await sendMessage(From, { body: `Thx. It's now ${currentParticipant.name}'s turn!`, includeCatGif: true })
         await sendMessage(prevParticipant.number, { body: `You got the thumbs up on this beauty.` })
     }
 
