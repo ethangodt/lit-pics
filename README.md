@@ -2,26 +2,28 @@
 🐱 Simple app to make sure me and my girlfriend are cleaning the damn litter box.
 
 ### Setup
-1. Create a `participants.json` file in app's root directory with participants, e.g.:
+1. Create a `config.json` file in app's root directory based off of `config.template.json`
+2. Replace the info in the participants array matching this format:
 ```
 [
     {
         "name": "ethan",
-        "number": "+15555555555" <-- this format is important!
+        "number": "+15555555555", <-- this format is important!
+        "karma": 0
     },
     {
         "name": "emilie",
-        "number": "+15555555555" <-- this format is important!
+        "number": "+15555555555", <-- this format is important!
+        "karma": 0
     }
 ]
 ```
-2. Create a `.env` file in app's root directory with these envs:
+3. Set preferences object to proper format:
 ```
-PORT={port-num}
-TIMEZONE={http://momentjs.com/timezone/}
-TWILIO_TOKEN={token}
-TWILIO_ACCOUNT={acct-sid}
-TWILIO_NUMBER=+{twilio-phone-num}
+{
+    "alertTime": https://www.npmjs.com/package/cron,
+    "timezone": http://momentjs.com/timezone
+}
 ```
-3. `npm i`
-3. `npm start`
+4. `npm i`
+5. `npm start`
