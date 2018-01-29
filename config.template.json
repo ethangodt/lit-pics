@@ -16,9 +16,17 @@
         "alertTime": "0 19 * * *",
         "timezone": "America/Chicago"
     },
+    "firebase": {
+      "apiKey": "",
+      "authDomain": "",
+      "databaseURL": "",
+      "projectId": "",
+      "storageBucket": "",
+      "messagingSenderId": ""
+    },
     "twilio": {
         "number": "+17777777777",
-        "accountSid": "xyz",
-        "authToken": "xyz"
+        "accountSid": "",
+        "authToken": ""
     }
 }
