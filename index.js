@@ -9,6 +9,7 @@ const CronJob = require('cron').CronJob
 const { alertTime, timezone } = require('./config').preferences
 const { participants, port } = require('./config')
 const { deleteImage, sendMessage } = require('./lib/messenger')
+const { addParticipant, updateKarma } = require('./lib/firebase')
 
 app.use(parser.urlencoded({ extended: false }))
 
@@ -49,7 +50,7 @@ app.post('/incoming', wrap(async (req, res) => {
     if (isImage) {
         await sendMessage(getNextParticipant().number, { body: 'Does this litter look fit for a critter? If so, respond with "ok".', mediaUrl: MediaUrl0 })
         await sendMessage(From, { body: 'Lit pic successfully sent...hopefully you did a good job :)' })
-        await setTimeout(() => await deleteImage(MessageSid, MediaSid), 10000)
+        await setTimeout(() => deleteImage(MessageSid, MediaSid), 10000)
     }
     if (isConfirmation) {
         const prevParticipant = currentParticipant
