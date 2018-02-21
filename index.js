@@ -24,7 +24,7 @@ function getNextParticipant() {
 let lastParticipantNotified = ''
 let dateLastCleaned = ''
 new CronJob(alertTime, async () => {
-    if (dateLastCleaned === generateCheckableDate()) {
+    if (dateLastCleaned === getSerializedDate()) {
       console.log(`skipping cron message`)
       return
     }
@@ -41,7 +41,7 @@ new CronJob(alertTime, async () => {
 }, null, true, timezone)
 
 new CronJob(followUpTime, async () => {
-  if (dateLastCleaned === generateCheckableDate()) {
+  if (dateLastCleaned === getSerializedDate()) {
     console.log(`skipping cron message`)
     return
   }
@@ -68,11 +68,20 @@ app.post('/incoming', wrap(async (req, res) => {
     const splitUrl = MediaUrl0.split('/')
     const MediaSid = splitUrl.find((string) => string.startsWith('ME'))
     const isImage = !!MediaUrl0
-    const isConfirmation = From === getNextParticipant().number && Body.toLowerCase() === 'ok'
-    const isSkip = Body.toLowerCase() === 'skip'
+    const isConfirmation = From === getNextParticipant().number && Body.trim().toLowerCase() === 'ok'
+    const isSkip = Body.trim().toLowerCase() === 'skip'
+    const isReset = Body.trim().toLowerCase() === 'reset'
 
-    if(isSkip){
+    if (isSkip) {
+        const lastRecipient = currentParticipant
         currentParticipant = getNextParticipant()
+        await sendMessage(From, { body: `${lastRecipient.name} was up. Now it's ${currentParticipant.name}.` })
+    }
+    if (isReset) {
+        // TODO managing this state could be way more robust
+        lastParticipantNotified = ''
+        dateLastCleaned = ''
+        await sendMessage(From, { body: `Everything has been reset, and ${currentParticipant.name} is currently up.` })
     }
     if (isImage) {
         await sendMessage(getNextParticipant().number, { body: content('APPROVAL_PROMPT'), mediaUrl: MediaUrl0 })
@@ -84,7 +93,7 @@ app.post('/incoming', wrap(async (req, res) => {
         currentParticipant = getNextParticipant()
         await sendMessage(From, { body: `Thx. Now it's ${From === currentParticipant.number ? 'your' : `${currentParticipant.name}'s`} turn!`, includeCatGif: true })
         await sendMessage(prevParticipant.number, { body: content('PIC_APPROVED') })
-        dateLastCleaned = generateCheckableDate()
+        dateLastCleaned = getSerializedDate()
     }
 
     return res.status(204).end()
@@ -103,7 +112,7 @@ app.listen(port, () => {
     console.log(`app listening on ${port}`)
 })
 
-function generateCheckableDate() {
+function getSerializedDate() {
   const date = new Date()
   return `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`
 

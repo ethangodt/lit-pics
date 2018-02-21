@@ -7,33 +7,60 @@
  */
 
 const content = {
-  EVENING_ALERT: [
-    /* instense */ `You and I are here in this familiar position again. Don't wait any longer to clean the litter boxes!`,
-    `It's your night to clean the hissers' pissers. Respond with a picture of a clean cat camode.`
-  ],
-  FOLLOW_UP_ALERT: [
-    /* instense */ ``,
-    `Howdy, looks like you didn't scoop the doop last night. Life is busy, but let's do it right for the kitty-babies.`
-  ],
-  APPROVAL_PROMPT: [
-    /* instense */ ``,
-    'Does this litter look fit for a critter? If so, respond with "ok".',
-  ],
-  PIC_SENT: [
-    /* instense */ ``,
-    'Pic successfully sent. Your effort will not go unnoticed. *purr*'
-  ],
-  PIC_APPROVED: [
-    /* instense */ ``,
-    `You got the thumbs up on this beauty.`,
-  ],
-  ERROR: [
-    /* instense */ ``,
-    'Deeply saddened to report, but something didn\'t work quite right. There was a server error.',
-  ],
+  EVENING_ALERT: {
+    intense: [
+      `You and I are here in this familiar position again. Don't wait any longer to clean the litter boxes!`,
+    ],
+    normal: [
+      `It's your night to clean the hissers' pissers. Respond with a picture of a clean cat camode.`
+    ],
+  },
+  FOLLOW_UP_ALERT: {
+    intense: [
+      ``,
+    ],
+    normal: [
+      `Howdy, looks like you didn't scoop the doop last night. Life is busy, but let's do it right for the kitty-babies.`,
+    ],
+  },
+  APPROVAL_PROMPT: {
+    intense: [
+      ``,
+    ],
+    normal: [
+      'Does this litter look fit for a critter? If so, respond with "ok".',
+    ],
+  },
+  PIC_SENT: {
+    intense: [
+      ``,
+    ],
+    normal: [
+      `Pic successfully sent. Your effort will not go unnoticed. *purr*`,
+    ],
+  },
+  PIC_APPROVED: {
+    intense: [
+      ``,
+    ],
+    normal: [
+      `You got the thumbs up on this beauty.`,
+      `Your pic got the "ok". Now go collect that purr tax.`,
+    ],
+  },
+  ERROR: {
+    intense: [
+      ``,
+    ],
+    normal: [
+      `Deeply saddened to report, but something didn\'t work quite right. There was a server error.`,
+    ],
+  },
 }
 
 module.exports.content = function (key, options = {}) {
   const { intense = false } = options
-  return (intense ? content[key][0] : content[key][1]) || ''
+  const list = content[key][intense ? 'intense' : 'normal']
+  const randomIdx = Math.floor(Math.random() * list.length)
+  return list[randomIdx] || ''
 }
