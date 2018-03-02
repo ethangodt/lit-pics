@@ -25,8 +25,8 @@ let lastParticipantNotified = ''
 let dateLastCleaned = ''
 new CronJob(alertTime, async () => {
     if (dateLastCleaned === getSerializedDate()) {
-      console.log(`skipping cron message`)
-      return
+        console.log(`skipping cron message`)
+        return
     }
     console.log(`cron task firing at ${new Date()}`)
     let alreadyNotified = lastParticipantNotified === currentParticipant.name
@@ -41,20 +41,20 @@ new CronJob(alertTime, async () => {
 }, null, true, timezone)
 
 new CronJob(followUpTime, async () => {
-  if (dateLastCleaned === getSerializedDate()) {
-    console.log(`skipping cron message`)
-    return
-  }
-  console.log(`cron task firing at ${new Date()}`)
-  let shouldFollowUp = lastParticipantNotified === currentParticipant.name
-  if (shouldFollowUp) {
-    await sendMessage(
-        currentParticipant.number,
-        {
-          body: content('FOLLOW_UP_ALERT'),
-        }
-    )
-  }
+    if (dateLastCleaned === getSerializedDate()) {
+        console.log(`skipping cron message`)
+        return
+    }
+    console.log(`cron task firing at ${new Date()}`)
+    let shouldFollowUp = lastParticipantNotified === currentParticipant.name
+    if (shouldFollowUp) {
+        await sendMessage(
+            currentParticipant.number,
+            {
+                body: content('FOLLOW_UP_ALERT'),
+            }
+        )
+    }
 }, null, true, timezone)
 
 app.use(morgan('tiny'))
@@ -71,29 +71,41 @@ app.post('/incoming', wrap(async (req, res) => {
     const isConfirmation = From === getNextParticipant().number && Body.trim().toLowerCase() === 'ok'
     const isSkip = Body.trim().toLowerCase() === 'skip'
     const isReset = Body.trim().toLowerCase() === 'reset'
+    const isStatus = Body.trim().toLowerCase() === 'status'
+    const isHow = Body.trim().toLowerCase() === 'how'
+    // TODO add some pause logic for vacation (by Ndays or indefinite)
 
-    if (isSkip) {
-        const lastRecipient = currentParticipant
-        currentParticipant = getNextParticipant()
-        await sendMessage(From, { body: `${lastRecipient.name} was up. Now it's ${currentParticipant.name}.` })
-    }
-    if (isReset) {
-        // TODO managing this state could be way more robust
-        lastParticipantNotified = ''
-        dateLastCleaned = ''
-        await sendMessage(From, { body: `Everything has been reset, and ${currentParticipant.name} is currently up.` })
-    }
     if (isImage) {
         await sendMessage(getNextParticipant().number, { body: content('APPROVAL_PROMPT'), mediaUrl: MediaUrl0 })
         await sendMessage(From, { body: content('PIC_SENT') })
         await setTimeout(async () => await deleteImage(MessageSid, MediaSid), 10000)
+        dateLastCleaned = getSerializedDate() // not sure if this is best here, but when saved on confirmation Em forgot to "ok" so I got messages the after cleaning which was annoying
     }
     if (isConfirmation) {
         const prevParticipant = currentParticipant
         currentParticipant = getNextParticipant()
         await sendMessage(From, { body: `Thx. Now it's ${From === currentParticipant.number ? 'your' : `${currentParticipant.name}'s`} turn!`, includeCatGif: true })
         await sendMessage(prevParticipant.number, { body: content('PIC_APPROVED') })
-        dateLastCleaned = getSerializedDate()
+    }
+    if (isSkip) {
+        const lastRecipient = currentParticipant
+        currentParticipant = getNextParticipant()
+        await sendMessage(From, { body: `${lastRecipient.name} was up. Now it's ${currentParticipant.name}.` })
+    }
+    if (isReset) {
+        lastParticipantNotified = ''
+        dateLastCleaned = ''
+        await sendMessage(From, { body: `Everything has been reset, and ${currentParticipant.name} is currently up.` })
+    }
+    if (isStatus) {
+        await sendMessage(From, {
+            body: `Current: ${currentParticipant.name}\nDate Last Cleaned: ${dateLastCleaned || 'n/a'}\nLast One Notified: ${lastParticipantNotified || 'n/a'}`
+        })
+    }
+    if (isHow) {
+        await sendMessage(From, {
+            body: `image: you just cleaned\n"ok": to approve a message\n"skip": set to next participant\n"reset": resets message state\n"status": log state`
+        })
     }
 
     return res.status(204).end()
@@ -103,7 +115,7 @@ app.use(async (err, req, res, next) => {
     const { body: { From } = {} } = req
     console.error(err)
     if (From) {
-      await sendMessage(From, { body: content('ERROR') })
+        await sendMessage(From, { body: content('ERROR') })
     }
     return res.status(204).end()
 })
@@ -113,7 +125,7 @@ app.listen(port, () => {
 })
 
 function getSerializedDate() {
-  const date = new Date()
-  return `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`
+    const date = new Date()
+    return `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`
 
 }
