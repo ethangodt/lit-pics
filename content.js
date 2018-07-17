@@ -41,7 +41,7 @@ const content = {
   },
   PIC_SENT: {
     intense: [
-      ``,
+      `Nice steal. Pic successfully sent. Your effort will not go unnoticed. *purr*`,
     ],
     normal: [
       `Pic successfully sent. Your effort will not go unnoticed. *purr*`,
@@ -53,7 +53,7 @@ const content = {
     ],
     normal: [
       `You got the thumbs up on this beauty.`,
-      `Your pic got the "ok". Now go collect that purr tax from the happy babbys`,
+      `Your pic got the "ok". Now go collect that purr tax from the happy babbys.`,
     ],
   },
   CONFIRMATION: {

@@ -98,7 +98,7 @@ app.post(
         body: content("APPROVAL_PROMPT", { intense: isStealing }), // TODO use 'alternate' or something — intense doesn't make sense
         mediaUrl: MediaUrl0
       });
-      await sendMessage(From, { body: content("PIC_SENT") });
+      await sendMessage(From, { body: content("PIC_SENT", { intense: isStealing }) });
       await setTimeout(
         async () => await deleteImage(MessageSid, MediaSid),
         10000
@@ -119,8 +119,8 @@ app.post(
       });
       if (isStealing) {
         await setTimeout(async () => await sendMessage(From, {
-          body: `Since the job was stolen you must pay your dues at ${cleaner.paypalme}.\nIt's honor system, but watch out if you plan to skip your payments, the cat's will get you in your sleep.`,
-        }), 5000);
+          body: `Since the job was stolen you must pay your dues at ${cleaner.paypalme}.\n\nIt's an honor system, but watch out if you plan to skip your payments, the cat's will get you in your sleep.`,
+        }), 15000);
       }
       await sendMessage(cleaner.number, {
         body: content("PIC_APPROVED")
