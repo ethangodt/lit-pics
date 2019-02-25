@@ -1,5 +1,4 @@
 // TODO figure out how to make this just a lambda function or something, so I don't need a server...
-
 const express = require("express");
 const morgan = require("morgan");
 const { wrap } = require("./middleware");
@@ -36,11 +35,12 @@ new CronJob(
       body: content("EVENING_ALERT", { intense: alreadyNotified }),
       includeCatGif: true
     });
-    if (alreadyNotified) {
-      await sendMessage(getNextParticipant().number, {
-        body: content("EVENING_STEAL")
-      });
-    }
+    // note: this steal stuff is too noisy
+    // if (alreadyNotified) {
+    //   await sendMessage(getNextParticipant().number, {
+    //     body: content("EVENING_STEAL")
+    //   });
+    // }
     lastParticipantNotified = currentParticipant.name;
   },
   null,
@@ -113,7 +113,7 @@ app.post(
         body: `Thx. Now it's ${
           From === currentParticipant.number
             ? "your"
-            : `${currentParticipant.name}'s`
+            : `${getNextParticipant().name}'s`
         } turn!`,
         includeCatGif: true
       });
